@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Fit</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="#inicio" class="logo">Life fit</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#calculo">Cálculo</a></li>
+                    <li><a href="#treinadores">Treinadores</a></li>
+                    <li><a href="#sobre-nos">Sobre Nós</a></li>
+                </ul>
+            </nav>
+            <div class="nav-actions">
+                <button id="open-modal-btn" class="btn">Login</button>
+                <div id="user-icon" class="user-icon hidden">
+                    <span>👤</span>
+                    <div class="dropdown-menu">
+                        <a href="#">Meu Painel</a>
+                        <a href="#">Editar Perfil</a>
+                        <a href="#">Configurações</a>
+                        <a href="#" id="logout-btn">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1>Transforme seu corpo, eleve sua mente.</h1>
+                    <p>Na Life Fit, oferecemos o melhor ambiente e os melhores profissionais para você alcançar seus objetivos de forma saudável e eficiente.</p>
+                    <a href="#calculo" class="btn btn-primary">Comece sua avaliação</a>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" alt="Pessoa se exercitando na academia">
+                </div>
+            </div>
+        </section>
+
+        <section id="treinadores" class="section">
+            <div class="container">
+                <h2>Conheça Nosso Time</h2>
+                <div class="trainers-grid">
+                    <div class="trainer-card">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=400" alt="Treinadora Ana">
+                        <h3>Ana Souza</h3>
+                        <p>Especialista em Hipertrofia</p>
+                    </div>
+                    <div class="trainer-card">
+                        <img src="https://images.unsplash.com/photo-1547425260-76bc4d4f24ac?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=400" alt="Treinador Carlos">
+                        <h3>Carlos Andrade</h3>
+                        <p>Foco em Funcional e Cardio</p>
+                    </div>
+                    <div class="trainer-card">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=400" alt="Nutricionista Julia">
+                        <h3>Julia Borges</h3>
+                        <p>Nutricionista Esportiva</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculo" class="section section-dark">
+            <div class="container">
+                <h2>Calculadora de Saúde Física</h2>
+                <p>Insira seus dados abaixo para uma avaliação inicial baseada no seu IMC.</p>
+                <form id="calc-form" class="calc-form">
+                    <div class="form-group">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" id="peso" step="0.1" placeholder="Ex: 75.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="altura">Altura (cm)</label>
+                        <input type="number" id="altura" placeholder="Ex: 180" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Calcular Agora</button>
+                </form>
+                <div id="resultado" class="resultado hidden">
+                    </div>
+            </div>
+        </section>
+
+        <section id="sobre-nos" class="section">
+            <div class="container">
+                <h2>Sobre a Life Fit</h2>
+                <p>Fundada em 2020, a Gemini Fitness nasceu com a missão de democratizar o acesso à saúde e ao bem-estar. Nossos valores são o compromisso com o resultado dos alunos, a excelência no atendimento e a inovação constante em métodos e equipamentos.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>Endereço:</strong> Rua da Saúde, 123 - Centro, São Paulo - SP</p>
+            <p><strong>Telefone:</strong> (11) 99999-8888</p>
+            <p>&copy; 2025 Gemini Fitness. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="modal-acesso" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="acesso-wrapper">
+                <div class="form-container">
+                    <h2>Já tem uma conta?</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-senha">Senha</label>
+                            <input type="password" id="login-senha" required>
+                        </div>
+                        <button type="submit" class="btn">Entrar</button>
+                    </form>
+                </div>
+                <div class="form-container">
+                    <h2>Crie sua conta</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="reg-nome">Nome Completo</label>
+                            <input type="text" id="reg-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">Email</label>
+                            <input type="email" id="reg-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-senha">Crie uma Senha</label>
+                            <input type="password" id="reg-senha" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
