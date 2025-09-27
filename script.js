@@ -59,10 +59,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             alert(data.message);
+            console.log('Dados recebidos do PHP:', data);
             if (data.status === 'success') {
-                loginBtnHeader.classList.add('hidden');
-                userIcon.classList.remove('hidden');
-                closeModal();
+                if (data.tipo === 'treinador') {
+                    window.location.href = 'painel_treinador.html'; // Redireciona para o painel do treinador
+                } else {
+                    window.location.href = 'painel_aluno.html'; // Redireciona para o painel do aluno
+                } 
             }
         })
         .catch(error => console.error('Erro:', error));

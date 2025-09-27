@@ -1,37 +1,44 @@
 <?php
-// Inicia a sessão para que possamos manter o usuário logado
+// Inicia a sessão ANTES de qualquer outra coisa. Isso é muito importante.
 session_start();
 
+// Inclui o arquivo de conexão
 include 'conexao.php';
+
+// Define o cabeçalho como JSON para a resposta
 header('Content-Type: application/json');
 
-$email = $_POST['email'];
-$senha_formulario = $_POST['senha'];
+// Pega os dados enviados pelo formulário
+$email = $_POST['email'] ?? ''; // Usar '??' é uma forma segura de evitar erros de 'Undefined index'
+$senha_formulario = $_POST['senha'] ?? '';
 
 if (empty($email) || empty($senha_formulario)) {
     echo json_encode(['status' => 'error', 'message' => 'Email e senha são obrigatórios.']);
     exit;
 }
 
-// Busca o usuário pelo email
-$sql = "SELECT id, nome, senha FROM usuarios WHERE email = ?";
+// Prepara a query para buscar o usuário pelo email
+$sql = "SELECT id, nome, senha, tipo FROM usuarios WHERE email = ?";
 $stmt = $conexao->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $resultado = $stmt->get_result();
 
-// Verifica se encontrou algum usuário
 if ($resultado->num_rows === 1) {
     $usuario = $resultado->fetch_assoc();
 
     // Compara a senha do formulário com a senha criptografada (hash) do banco
     if (password_verify($senha_formulario, $usuario['senha'])) {
         // Senha correta! Login bem-sucedido.
-        // Armazena informações do usuário na sessão
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nome'] = $usuario['nome'];
+        $_SESSION['usuario_tipo'] = $usuario['tipo'];
         
-        echo json_encode(['status' => 'success', 'message' => 'Login realizado com sucesso!']);
+        echo json_encode([
+            'status' => 'success', 
+            'message' => 'Login realizado com sucesso!',
+            'tipo' => $usuario['tipo']
+        ]);
     } else {
         // Senha incorreta
         echo json_encode(['status' => 'error', 'message' => 'Email ou senha inválidos.']);
@@ -43,4 +50,5 @@ if ($resultado->num_rows === 1) {
 
 $stmt->close();
 $conexao->close();
+
 ?>
