@@ -62,9 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Dados recebidos do PHP:', data);
             if (data.status === 'success') {
                 if (data.tipo === 'treinador') {
-                    window.location.href = 'painel_treinador.html'; // Redireciona para o painel do treinador
+                    window.location.href = 'painel_treinador.php'; // Redireciona para o painel do treinador
                 } else {
-                    window.location.href = 'painel_aluno.html'; // Redireciona para o painel do aluno
+                    window.location.href = 'painel_aluno.php'; // Redireciona para o painel do aluno
                 } 
             }
         })
