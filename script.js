@@ -125,3 +125,18 @@ document.addEventListener('DOMContentLoaded', function() {
         resultadoDiv.classList.remove('hidden');
     }
 });
+
+
+
+//Tema escuro 
+
+
+
+
+
+
+
+
+
+
+//Tema claro
