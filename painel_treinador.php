@@ -9,6 +9,18 @@ include 'template/header.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Treinador - Life fit</title>
     <link rel="stylesheet" href="painel.css">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            } else if (theme === 'light') {
+                document.documentElement.classList.remove('dark-mode');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
 </head>
 <body>
 
@@ -30,5 +42,6 @@ include 'template/header.php';
         </section>
     </main>
     <script src="painel_treinador.js"></script>
+    <script src="theme-toggle.js"></script>
 </body>
 </html>

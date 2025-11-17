@@ -16,12 +16,16 @@ $nome_usuario = $_SESSION['usuario_nome'];
 <header class="painel-header">
     <h1>Bem-vindo, <?php echo htmlspecialchars($nome_usuario); ?>!</h1>
     
-    <div class="user-icon-painel">
-        <span>👤</span>
-        <div class="dropdown-menu">
-            <a href="#">Meu Perfil</a>
-            <a href="#">Configurações</a>
-            <a href="php/logout.php">Sair</a>
+    <div class= "header-controls">
+        <button id= "theme-toggle" class="btn-icon">🌙</button>
+
+        <div class="user-icon-painel">
+            <span>👤</span>
+            <div class="dropdown-menu">
+                <a href="#">Meu Perfil</a>
+                <a href="#">Configurações</a>
+                <a href="php/logout.php">Sair</a>
+            </div>
         </div>
     </div>
 </header>

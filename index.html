@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life Fit</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+    (function() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        } else if (theme === 'light') {
+            document.documentElement.classList.remove('dark-mode');
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // Opcional: Respeita a preferência do sistema operacional
+            document.documentElement.classList.add('dark-mode');
+        }
+    })();
+</script>
 </head>
 <body>
 
@@ -21,8 +34,12 @@
                 </ul>
             </nav>
             <div class="nav-actions">
+                <button id="theme-toggle" class="btn-icon">🌙</button>
+
                 <button id="open-modal-btn" class="btn">Login</button>
-                <button id="temaEscuro" class="btn">escuro</button>
+                <div id="user-icon" class="user-icon hidden">
+
+                </div>
             </div>
         </div>
     </header>
@@ -167,5 +184,6 @@
 
 
     <script src="script.js"></script>
+    <script src="theme-toggle.js"></script>
 </body>
 </html>

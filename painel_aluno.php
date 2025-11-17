@@ -35,6 +35,19 @@ include 'template/header.php';
             padding: 20px;
         }
     </style>
+    <script>
+    (function() {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        } else if (theme === 'light') {
+            document.documentElement.classList.remove('dark-mode');
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // Opcional: Respeita a preferência do sistema operacional
+            document.documentElement.classList.add('dark-mode');
+        }
+    })();
+</script>
 </head>
 <body>
 
@@ -62,5 +75,6 @@ include 'template/header.php';
     </main>
 
     <script src="painel_aluno.js"></script>
+    <script src="theme-toggle.js"></script>
 </body>
 </html>
