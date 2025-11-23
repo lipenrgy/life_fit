@@ -33,11 +33,13 @@
                     <label for="password">Senha</label>
                 </div>
 
-                <div class="form-group">
-                    <input type="password" id="confirm-password" required>
-                    <i class="fas fa-lock"></i>
-                    <label for="confirm-password">Confirme a sua senha </label>
+                <div class="user-type-buttons three-buttons">
+                  <button type="button" class="type-btn">Paciente</button>
+                  <button type="button" class="type-btn">Nutricionista</button>
+                  <button type="button" class="type-btn">Personal</button>
                 </div>
+
+ 
 
                 <button type="submit" class="btn">Registrar</button>
 
@@ -82,5 +84,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <script src="login.js"></script>
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttonsContainer = document.querySelector('.user-type-buttons');
+        const typeButtons = document.querySelectorAll('.user-type-buttons .type-btn');
+
+        if (buttonsContainer && typeButtons.length > 0) {
+            
+            buttonsContainer.addEventListener('click', function(event) {
+                if (event.target.classList.contains('type-btn')) {
+                    const clickedButton = event.target;
+                    
+                    // Remove a classe 'selected' de todos os botões
+                    typeButtons.forEach(button => {
+                        button.classList.remove('selected');
+                    });
+                    
+                    // Adiciona a classe 'selected' APENAS no botão clicado
+                    clickedButton.classList.add('selected');
+                }
+            });
+            
+        } else {
+            console.error("ERRO: O container '.user-type-buttons' ou os botões de tipo não foram encontrados.");
+        }
+    });
+</script>
+
+
 </body>
 </html>

@@ -71,8 +71,9 @@ body {
 
 .wrapper .form-container form .form-group {
     position: relative;
-    width: 32rem;
-    margin: 3rem 0;
+    width: 100%;
+    /* REDUÇÃO AGRESSIVA: Diminuindo a margem vertical para aproximar os inputs */
+    margin: 0.8rem 0; /* 0.8rem é um valor bem pequeno, cerca de 8px */
 }
 
 .wrapper .form-container form .form-group i,
@@ -385,6 +386,98 @@ form .form-group input:valid ~ i {
     }
 }
 
- 
+/* --- Estilos para o Wrapper Principal dos Botões de Tipo --- */
+.user-type-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    /* Reduzindo a margem superior para 5px e mantendo a inferior em 10px */
+    margin: 0.5rem 0 1rem 0; 
+    padding: 0;
+    gap: 5px;
+}
+
+/* --- Estilo Base dos Botões de Tipo --- */
+.type-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #8a2be2, #4b0082);
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform: capitalize; 
+    text-align: center;
+    /* CHAVE: Garante a transição suave para as transformações */
+    transition: all 0.3s ease; 
+    
+    /* Estado normal: ligeiramente diminuído e com opacidade reduzida para o contraste */
+    transform: scale(0.98); 
+    opacity: 0.8;
+}
+
+/* Garante que não haja margens desnecessárias nas laterais do grupo */
+.user-type-buttons .type-btn:first-child {
+    margin-left: 0; /* Remove a margem extra, se houver */
+}
+.user-type-buttons .type-btn:last-child {
+    margin-right: 0; /* Remove a margem extra, se houver */
+}
+
+.type-btn:hover {
+    opacity: 0.9;
+}
 
 
+
+/* Efeito de HOVER e Foco (ao clicar) no INPUT */
+.wrapper .form-container form .form-group input {
+    /* ... seu estilo atual ... */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 🖱️ Efeito ao passar o mouse */
+.wrapper .form-container form .form-group input:hover {
+    border-color: #7957d5; 
+    box-shadow: 0 0 5px rgba(121, 87, 213, 0.5); 
+}
+
+/* ✍️ Efeito ao clicar no campo (Foco) */
+.wrapper .form-container form .form-group input:focus {
+    border-color: #5d00a0;
+    box-shadow: 0 0 7px rgba(93, 0, 160, 0.7);
+}
+
+/* Garante que o rótulo e o ícone também fiquem destacados ao focar */
+form .form-group input:focus ~ i,
+form .form-group input:valid ~ i {
+    color: #5d00a0; 
+}
+
+
+/* Estilo para o botão que foi Clicado/Selecionado */
+.type-btn.selected {
+    /* CHAVE: Volta à escala 100% e aumenta mais para o efeito visual */
+    transform: scale(1.10); 
+    /* CHAVE: Volta à opacidade total */
+    opacity: 1; 
+    
+    /* Adiciona sombra e cor de destaque */
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.9), 0 0 15px rgba(138, 43, 226, 0.5); 
+    font-weight: 600 !important;
+    z-index: 1; /* Garante que ele fique acima dos outros visualmente */
+}
+
+/* Garante a transição suave para todos os botões (para o efeito de crescimento/diminuição) */
+.user-type-buttons .type-btn {
+    /* ... seu estilo atual ... */
+    transition: all 0.3s ease; /* Essencial para a animação */
+}
+
+/* Garante que ao passar o mouse (hover), mesmo se não estiver selecionado, ele reaja */
+.type-btn:hover:not(.selected) {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
