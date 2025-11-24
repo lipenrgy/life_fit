@@ -12,34 +12,34 @@
         
         <!-- SIGN UP -->
         <div class="form-container sign-up">
-            <form action="#">
+            <form id="form-register">
                 <h2>Registre-se</h2>
 
                 <div class="form-group">
-                    <input type="text" id="username" required>
+                    <input type="text" id="reg-nome" required>
                     <i class="fas fa-user"></i>
-                    <label for="username">Seu nome</label>
+                    <label for="reg-nome">Seu nome</label>
                 </div>
 
                 <div class="form-group">
-                    <input type="email" id="email" required>
+                    <input type="email" id="reg-email" required>
                     <i class="fas fa-at"></i>
-                    <label for="email">Email</label>
+                    <label for="reg-email">Email</label>
                 </div>
 
                 <div class="form-group">
-                    <input type="password" id="password" required>
+                    <input type="password" id="reg-senha" required>
                     <i class="fas fa-lock"></i>
-                    <label for="password">Senha</label>
+                    <label for="reg-senha">Senha</label>
                 </div>
 
-                <div class="user-type-buttons three-buttons">
-                  <button type="button" class="type-btn">Paciente</button>
-                  <button type="button" class="type-btn">Nutricionista</button>
-                  <button type="button" class="type-btn">Personal</button>
+                <div class="user-type-buttons three-buttons" id="type-buttons-container">
+                  <button type="button" class="type-btn selected" data-tipo="aluno">Paciente</button>
+                  <button type="button" class="type-btn" data-tipo="treinador">Nutricionista</button>
+                  <button type="button" class="type-btn" data-tipo="treinador">Personal</button>
                 </div>
 
- 
+                <input type="hidden" id="reg-type" value="aluno">
 
                 <button type="submit" class="btn">Registrar</button>
 
@@ -51,19 +51,19 @@
 
         <!-- LOGIN -->
         <div class="form-container sign-in">
-            <form action="#">
+            <form id="form-login">
                 <h2>Login</h2>
 
                 <div class="form-group">
-                    <input type="text" id="username" required>
+                    <input type="email" id="login-email" required>
                     <i class="fas fa-user"></i>
-                    <label for="username">Seu nome</label>
+                    <label for="login-email">Email</label>
                 </div>
 
                 <div class="form-group">
-                    <input type="password" id="password" required>
+                    <input type="password" id="login-senha" required>
                     <i class="fas fa-lock"></i>
-                    <label for="password">Senha</label>
+                    <label for="login-senha">Senha</label>
                 </div>
 
                 <div class="forgot-pass">
@@ -86,30 +86,107 @@
     <script src="login.js"></script>
 
  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const buttonsContainer = document.querySelector('.user-type-buttons');
-        const typeButtons = document.querySelectorAll('.user-type-buttons .type-btn');
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- 1. LÓGICA DE ANIMAÇÃO (TROCA ENTRE LOGIN E REGISTRO) ---
+    const wrapper = document.querySelector('.wrapper');
+    const signUpLink = document.querySelector('.signup-link');
+    const signInLink = document.querySelector('.signin-link');
 
-        if (buttonsContainer && typeButtons.length > 0) {
-            
-            buttonsContainer.addEventListener('click', function(event) {
-                if (event.target.classList.contains('type-btn')) {
-                    const clickedButton = event.target;
-                    
-                    // Remove a classe 'selected' de todos os botões
-                    typeButtons.forEach(button => {
-                        button.classList.remove('selected');
-                    });
-                    
-                    // Adiciona a classe 'selected' APENAS no botão clicado
-                    clickedButton.classList.add('selected');
-                }
-            });
-            
-        } else {
-            console.error("ERRO: O container '.user-type-buttons' ou os botões de tipo não foram encontrados.");
-        }
+    signUpLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        wrapper.classList.add('animate-signIn');
+        wrapper.classList.add('animate-signUp');
     });
+
+    signInLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        wrapper.classList.add('animate-signIn');
+        wrapper.classList.remove('animate-signUp');
+    });
+
+    // --- 2. LÓGICA DE SELEÇÃO DO TIPO DE USUÁRIO ---
+    const typeButtons = document.querySelectorAll('.type-btn');
+    const hiddenTypeInput = document.getElementById('reg-type');
+
+    typeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove classe selected de todos
+            typeButtons.forEach(b => b.classList.remove('selected'));
+            // Adiciona no clicado
+            this.classList.add('selected');
+            
+            // Atualiza o input escondido com o valor 'aluno' ou 'treinador'
+            // Nota: Nutricionista e Personal serão tratados como 'treinador' no banco
+            hiddenTypeInput.value = this.getAttribute('data-tipo');
+        });
+    });
+
+    // --- 3. CONEXÃO COM O PHP (FETCH API) ---
+
+    // A. LOGIN
+    const formLogin = document.getElementById('form-login');
+    formLogin.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData();
+        // Pegando os dados dos novos IDs do HTML atualizado
+        formData.append('email', document.getElementById('login-email').value);
+        formData.append('senha', document.getElementById('login-senha').value);
+
+        // Envia para a pasta php/login.php
+        fetch('php/login.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Redireciona baseado no tipo retornado pelo PHP
+                if (data.tipo === 'treinador') {
+                    window.location.href = 'painel_treinador.php';
+                } else {
+                    window.location.href = 'painel_aluno.php';
+                }
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Erro no login:', error));
+    });
+
+    // B. REGISTRO
+    const formRegister = document.getElementById('form-register');
+    formRegister.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('nome', document.getElementById('reg-nome').value);
+        formData.append('email', document.getElementById('reg-email').value);
+        formData.append('senha', document.getElementById('reg-senha').value);
+        
+        // Pega o valor do botão selecionado (aluno ou treinador)
+        formData.append('tipo', hiddenTypeInput.value); 
+        
+        // Envia para a pasta php/registrar.php (PRECISAMOS ATUALIZAR ESSE PHP PARA ACEITAR 'TIPO')e ja ta atualizado galera nao precisa mudar mais
+        fetch('php/registrar.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.status === 'success') {
+                // Se der certo, volta para a tela de login
+                wrapper.classList.add('animate-signIn');
+                wrapper.classList.remove('animate-signUp');
+                formRegister.reset();
+            }
+        })
+        .catch(error => console.error('Erro no registro:', error));
+    });
+
+});
 </script>
 
 

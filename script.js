@@ -1,83 +1,83 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- LÓGICA PARA CONTROLE DO MODAL ---
-    const modalAcesso = document.getElementById('modal-acesso');
-    const openModalBtn = document.getElementById('open-modal-btn');
-    const closeModalBtn = document.querySelector('.close-modal');
-    // ... (toda a lógica de abrir/fechar o modal continua igual)
-    function openModal() { modalAcesso.classList.add('active'); }
-    function closeModal() { modalAcesso.classList.remove('active'); }
-    openModalBtn.addEventListener('click', openModal);
-    closeModalBtn.addEventListener('click', closeModal);
-    modalAcesso.addEventListener('click', (event) => { if (event.target === modalAcesso) closeModal(); });
+    // // --- LÓGICA PARA CONTROLE DO MODAL ---
+    // const modalAcesso = document.getElementById('modal-acesso');
+    // const openModalBtn = document.getElementById('open-modal-btn');
+    // const closeModalBtn = document.querySelector('.close-modal');
+    // // ... (toda a lógica de abrir/fechar o modal continua igual)
+    // function openModal() { modalAcesso.classList.add('active'); }
+    // function closeModal() { modalAcesso.classList.remove('active'); }
+    // openModalBtn.addEventListener('click', openModal);
+    // closeModalBtn.addEventListener('click', closeModal);
+    // modalAcesso.addEventListener('click', (event) => { if (event.target === modalAcesso) closeModal(); });
 
 
-    // --- LÓGICA DOS FORMULÁRIOS COM FETCH API ---
-    const loginBtnHeader = document.getElementById('open-modal-btn');
-    const userIcon = document.getElementById('user-icon');
-    const logoutBtn = document.getElementById('logout-btn');
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
+    // // --- LÓGICA DOS FORMULÁRIOS COM FETCH API ---
+    // const loginBtnHeader = document.getElementById('open-modal-btn');
+    // const userIcon = document.getElementById('user-icon');
+    // const logoutBtn = document.getElementById('logout-btn');
+    // const loginForm = document.getElementById('login-form');
+    // const registerForm = document.getElementById('register-form');
 
-    // -- FORMULÁRIO DE REGISTRO --
-    registerForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Impede o recarregamento da página
+    // // -- FORMULÁRIO DE REGISTRO --
+    // registerForm.addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Impede o recarregamento da página
 
-        const formData = new FormData(registerForm);
-        // Mapeia os names dos inputs para os nomes esperados pelo PHP
-        formData.append('nome', document.getElementById('reg-nome').value);
-        formData.append('email', document.getElementById('reg-email').value);
-        formData.append('senha', document.getElementById('reg-senha').value);
+    //     const formData = new FormData(registerForm);
+    //     // Mapeia os names dos inputs para os nomes esperados pelo PHP
+    //     formData.append('nome', document.getElementById('reg-nome').value);
+    //     formData.append('email', document.getElementById('reg-email').value);
+    //     formData.append('senha', document.getElementById('reg-senha').value);
         
-        fetch('php/registrar.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message); // Mostra a mensagem de sucesso ou erro
-            if (data.status === 'success') {
-                registerForm.reset();
-                closeModal();
-            }
-        })
-        .catch(error => console.error('Erro:', error));
-    });
+    //     fetch('php/registrar.php', {
+    //         method: 'POST',
+    //         body: formData
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         alert(data.message); // Mostra a mensagem de sucesso ou erro
+    //         if (data.status === 'success') {
+    //             registerForm.reset();
+    //             closeModal();
+    //         }
+    //     })
+    //     .catch(error => console.error('Erro:', error));
+    // });
 
-    // -- FORMULÁRIO DE LOGIN --
-    loginForm.addEventListener('submit', function(event) {
-        event.preventDefault();
+    // // -- FORMULÁRIO DE LOGIN --
+    // loginForm.addEventListener('submit', function(event) {
+    //     event.preventDefault();
         
-        const formData = new FormData();
-        formData.append('email', document.getElementById('login-email').value);
-        formData.append('senha', document.getElementById('login-senha').value);
+    //     const formData = new FormData();
+    //     formData.append('email', document.getElementById('login-email').value);
+    //     formData.append('senha', document.getElementById('login-senha').value);
 
-        fetch('php/login.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            console.log('Dados recebidos do PHP:', data);
-            if (data.status === 'success') {
-                if (data.tipo === 'treinador') {
-                    window.location.href = 'painel_treinador.php'; // Redireciona para o painel do treinador
-                } else {
-                    window.location.href = 'painel_aluno.php'; // Redireciona para o painel do aluno
-                } 
-            }
-        })
-        .catch(error => console.error('Erro:', error));
-    });
+    //     fetch('php/login.php', {
+    //         method: 'POST',
+    //         body: formData
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         alert(data.message);
+    //         console.log('Dados recebidos do PHP:', data);
+    //         if (data.status === 'success') {
+    //             if (data.tipo === 'treinador') {
+    //                 window.location.href = 'painel_treinador.php'; // Redireciona para o painel do treinador
+    //             } else {
+    //                 window.location.href = 'painel_aluno.php'; // Redireciona para o painel do aluno
+    //             } 
+    //         }
+    //     })
+    //     .catch(error => console.error('Erro:', error));
+    // });
 
-    logoutBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        // Em um sistema real, aqui chamaríamos um script php/logout.php para destruir a sessão
-        userIcon.classList.add('hidden');
-        loginBtnHeader.classList.remove('hidden');
-        alert("Você saiu da sua conta.");
-    });
+    // logoutBtn.addEventListener('click', (event) => {
+    //     event.preventDefault();
+    //     // Em um sistema real, aqui chamaríamos um script php/logout.php para destruir a sessão
+    //     userIcon.classList.add('hidden');
+    //     loginBtnHeader.classList.remove('hidden');
+    //     alert("Você saiu da sua conta.");
+    // });
 
 
     // --- LÓGICA DA CALCULADORA DE IMC (sem alterações) ---
@@ -103,12 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
             <p>Seu IMC é <strong>${imc.toFixed(2)}</strong>.</p>
             <p>Classificação: <strong>${classificacao}</strong>.</p>
             <p style="margin-top: 20px;">Este é um ótimo primeiro passo! Que tal um plano feito sob medida para você?</p>
-            <button id="open-register-modal-btn" class="btn btn-primary" style="margin-top: 10px;">Registre-se para um Plano Personalizado!</button>
+            <a href="login.html" class="btn btn-primary" style="margin-top: 10px; display: inline-block; text-decoration: none; color: white;">Registre-se para um Plano Personalizado!</a>
         `;
 
         exibirResultado(mensagem, categoria);
         
-        document.getElementById('open-register-modal-btn').addEventListener('click', openModal);
     });
 
     function getClassificacaoIMC(imc) {

@@ -6,8 +6,6 @@ error_reporting(E_ALL); // Mostra todos os tipos de erros
 // Inclui o arquivo de conexão
 include 'conexao.php';
 
-// Inclui o arquivo de conexão
-include 'conexao.php';
 
 // Define o cabeçalho como JSON para a resposta
 header('Content-Type: application/json');
@@ -16,6 +14,8 @@ header('Content-Type: application/json');
 $nome = $_POST['nome'];
 $email = $_POST['email'];
 $senha = $_POST['senha'];
+
+$tipo = isset($_POST['tipo']) ? $_POST['tipo'] : 'aluno'; // Pega o tipo de usuário, padrão aluno
 
 // Validação simples (em um projeto real, a validação seria mais robusta)
 if (empty($nome) || empty($email) || empty($senha)) {
@@ -27,11 +27,10 @@ if (empty($nome) || empty($email) || empty($senha)) {
 $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
 // Prepara a query SQL para evitar injeção de SQL
-$sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
+$sql = "INSERT INTO usuarios (nome, email, senha, tipo) VALUES (?, ?, ?, ?)";
 $stmt = $conexao->prepare($sql);
-
-// "sss" significa que estamos passando três strings como parâmetros
-$stmt->bind_param("sss", $nome, $email, $senha_hash);
+$stmt->bind_param("ssss", $nome, $email, $senha_hash, $tipo);
+// "ssss" significa que estamos passando quatro strings como parâmetros
 
 // Executa a query e verifica se foi bem-sucedida
 if ($stmt->execute()) {
