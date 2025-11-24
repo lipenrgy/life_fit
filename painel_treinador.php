@@ -38,7 +38,6 @@ include 'template/header.php';
                 </label>
             </div>
 
-            <a href="index.html" class="btn-sair">Sair</a>
         </div>
     </header>
     <main class="painel-container">

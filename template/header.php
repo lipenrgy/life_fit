@@ -17,7 +17,6 @@ $nome_usuario = $_SESSION['usuario_nome'];
     <h1>Bem-vindo, <?php echo htmlspecialchars($nome_usuario); ?>!</h1>
     
     <div class= "header-controls">
-        <button id= "theme-toggle" class="btn-icon">🌙</button>
 
         <div class="user-icon-painel">
             <span>👤</span>
