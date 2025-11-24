@@ -252,3 +252,68 @@ html.dark-mode .lista-alunos li.active {
     font-size: 1rem;
     color: var(--texto-secundario);
 }
+/* --- ESTILO DO BOTÃO SWITCH (TEMA) PARA O PAINEL --- */
+
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    /* Removemos a margem direita fixa para se ajustar ao flexbox do header-controls */
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border-radius: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+.slider:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 26px;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+input:checked + .slider {
+    background-color: var(--violeta);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.icon-sun, .icon-moon {
+    font-size: 14px;
+    z-index: 1;
+    user-select: none;
+}
+
+.icon-sun { margin-left: 2px; }
+.icon-moon { margin-right: 2px; }

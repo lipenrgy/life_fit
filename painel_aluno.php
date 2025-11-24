@@ -12,7 +12,7 @@ include 'template/header.php';
     <style>
         /* Estilos adicionais específicos para o painel do aluno */
         .plano-display {
-            background-color: var(--branco);
+            background-color: var(--fundo-secundario); /* Ajustei para usar a variável do tema */
             padding: 25px;
             border-radius: 8px;
             box-shadow: var(--sombra);
@@ -21,13 +21,14 @@ include 'template/header.php';
         .plano-display h2 {
             color: var(--violeta);
             margin-top: 0;
-            border-bottom: 2px solid var(--cinza-claro);
+            border-bottom: 2px solid var(--fundo-primario); /* Ajustei para usar a variável do tema */
             padding-bottom: 10px;
         }
         .plano-conteudo {
             white-space: pre-wrap; /* Esta propriedade é importante para manter as quebras de linha do texto */
             line-height: 1.7;
             font-size: 1rem;
+            color: var(--texto-secundario); /* Garante cor correta no modo escuro */
         }
         .painel-container-aluno {
             max-width: 900px;
@@ -53,7 +54,20 @@ include 'template/header.php';
 
     <header class="painel-header">
         <h1>Meu Painel</h1>
-        <a href="index.html" class="btn-sair">Sair</a>
+        
+        <div class="header-controls">
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="checkbox-theme">
+                    <input type="checkbox" id="checkbox-theme" />
+                    <div class="slider round">
+                        <span class="icon-sun">☀️</span>
+                        <span class="icon-moon">🌙</span>
+                    </div>
+                </label>
+            </div>
+
+            <a href="index.html" class="btn-sair">Sair</a>
+        </div>
     </header>
 
     <main class="painel-container-aluno">
