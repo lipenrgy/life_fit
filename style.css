@@ -160,6 +160,12 @@ h2 {
     font-weight: 600;
     transition: color 0.3s;
 }
+/* Adicione isso para alinhar o botão e o login lado a lado */
+.nav-actions {
+    display: flex;       /* Transforma em uma linha flexível */
+    align-items: center; /* Centraliza verticalmente */
+    gap: 15px;           /* Espaço entre o botão de tema, o login e o ícone */
+}
 
 .nav-links a:hover {
     color: var(--violeta);
@@ -421,4 +427,78 @@ footer {
     text-align: center;
     padding: 20px 0;
     margin-top: 40px;
+}
+/* --- ESTILO DO BOTÃO SWITCH (TEMA) --- */
+
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    margin-right: 15px; /* Espaço entre o switch e o botão de Login */
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+}
+
+.theme-switch input {
+    display: none; /* Esconde a caixa de seleção padrão feia */
+}
+
+.slider {
+    background-color: #ccc; /* Cor do fundo quando desligado (Light Mode) */
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s; /* Suavidade da animação */
+    border-radius: 34px; /* Deixa arredondado */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* A bolinha que se move */
+.slider:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 26px;
+    border-radius: 50%;
+    z-index: 2; /* Garante que a bolinha fique por cima dos ícones */
+}
+
+/* Quando o input estiver marcado (Dark Mode Ativo) */
+input:checked + .slider {
+    background-color: var(--violeta); /* Usa a sua cor roxa */
+}
+
+/* Move a bolinha para a direita quando marcado */
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Ícones dentro do botão */
+.icon-sun, .icon-moon {
+    font-size: 14px;
+    z-index: 1;
+    user-select: none;
+}
+
+.icon-sun {
+    margin-left: 2px;
+}
+
+.icon-moon {
+    margin-right: 2px;
 }
