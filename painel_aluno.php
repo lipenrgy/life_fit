@@ -1,5 +1,5 @@
 <?php 
-// Incluímos o mesmo cabeçalho aqui!
+// Inclui o cabeçalho (que já tem o session_start e o visual do topo)
 include 'template/header.php'; 
 ?>
 <!DOCTYPE html>
@@ -10,9 +10,9 @@ include 'template/header.php';
     <title>Meu Painel - Life Fit</title>
     <link rel="stylesheet" href="painel.css">
     <style>
-        /* Estilos adicionais específicos para o painel do aluno */
+        /* Estilos específicos para o painel do aluno */
         .plano-display {
-            background-color: var(--fundo-secundario); /* Ajustei para usar a variável do tema */
+            background-color: var(--fundo-secundario);
             padding: 25px;
             border-radius: 8px;
             box-shadow: var(--sombra);
@@ -21,55 +21,45 @@ include 'template/header.php';
         .plano-display h2 {
             color: var(--violeta);
             margin-top: 0;
-            border-bottom: 2px solid var(--fundo-primario); /* Ajustei para usar a variável do tema */
+            border-bottom: 2px solid var(--fundo-primario);
             padding-bottom: 10px;
         }
         .plano-conteudo {
-            white-space: pre-wrap; /* Esta propriedade é importante para manter as quebras de linha do texto */
+            white-space: pre-wrap;
             line-height: 1.7;
             font-size: 1rem;
-            color: var(--texto-secundario); /* Garante cor correta no modo escuro */
+            color: var(--texto-secundario);
         }
         .painel-container-aluno {
             max-width: 900px;
             margin: 20px auto;
             padding: 20px;
         }
+        /* Estilo para o título que movemos para o main */
+        .titulo-pagina {
+            color: var(--violeta);
+            margin-bottom: 20px;
+        }
     </style>
     <script>
-    (function() {
-        const theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark-mode');
-        } else if (theme === 'light') {
-            document.documentElement.classList.remove('dark-mode');
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            // Opcional: Respeita a preferência do sistema operacional
-            document.documentElement.classList.add('dark-mode');
-        }
-    })();
-</script>
+        // Script para evitar "flash" do tema claro ao carregar
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            } else if (theme === 'light') {
+                document.documentElement.classList.remove('dark-mode');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
 </head>
 <body>
 
-    <header class="painel-header">
-        <h1>Meu Painel</h1>
-        
-        <div class="header-controls">
-            <div class="theme-switch-wrapper">
-                <label class="theme-switch" for="checkbox-theme">
-                    <input type="checkbox" id="checkbox-theme" />
-                    <div class="slider round">
-                        <span class="icon-sun">☀️</span>
-                        <span class="icon-moon">🌙</span>
-                    </div>
-                </label>
-            </div>
-
-        </div>
-    </header>
-
     <main class="painel-container-aluno">
+        
+        <h1 class="titulo-pagina">Meu Painel</h1>
         
         <section class="plano-display">
             <h2>Meu Plano de Treino</h2>

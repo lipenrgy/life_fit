@@ -26,19 +26,21 @@ include 'template/header.php';
 
     <header class="painel-header">
         <h1>Painel do Treinador</h1>
-        
-        <div class="header-controls">
-            <div class="theme-switch-wrapper">
-                <label class="theme-switch" for="checkbox-theme">
-                    <input type="checkbox" id="checkbox-theme" />
-                    <div class="slider round">
-                        <span class="icon-sun">☀️</span>
-                        <span class="icon-moon">🌙</span>
-                    </div>
-                </label>
-            </div>
 
-        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     </header>
     <main class="painel-container">
         <section class="lista-alunos">
