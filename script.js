@@ -1,141 +1,69 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // // --- LÓGICA PARA CONTROLE DO MODAL ---
-    // const modalAcesso = document.getElementById('modal-acesso');
-    // const openModalBtn = document.getElementById('open-modal-btn');
-    // const closeModalBtn = document.querySelector('.close-modal');
-    // // ... (toda a lógica de abrir/fechar o modal continua igual)
-    // function openModal() { modalAcesso.classList.add('active'); }
-    // function closeModal() { modalAcesso.classList.remove('active'); }
-    // openModalBtn.addEventListener('click', openModal);
-    // closeModalBtn.addEventListener('click', closeModal);
-    // modalAcesso.addEventListener('click', (event) => { if (event.target === modalAcesso) closeModal(); });
-
-
-    // // --- LÓGICA DOS FORMULÁRIOS COM FETCH API ---
-    // const loginBtnHeader = document.getElementById('open-modal-btn');
-    // const userIcon = document.getElementById('user-icon');
-    // const logoutBtn = document.getElementById('logout-btn');
-    // const loginForm = document.getElementById('login-form');
-    // const registerForm = document.getElementById('register-form');
-
-    // // -- FORMULÁRIO DE REGISTRO --
-    // registerForm.addEventListener('submit', function(event) {
-    //     event.preventDefault(); // Impede o recarregamento da página
-
-    //     const formData = new FormData(registerForm);
-    //     // Mapeia os names dos inputs para os nomes esperados pelo PHP
-    //     formData.append('nome', document.getElementById('reg-nome').value);
-    //     formData.append('email', document.getElementById('reg-email').value);
-    //     formData.append('senha', document.getElementById('reg-senha').value);
-        
-    //     fetch('php/registrar.php', {
-    //         method: 'POST',
-    //         body: formData
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         alert(data.message); // Mostra a mensagem de sucesso ou erro
-    //         if (data.status === 'success') {
-    //             registerForm.reset();
-    //             closeModal();
-    //         }
-    //     })
-    //     .catch(error => console.error('Erro:', error));
-    // });
-
-    // // -- FORMULÁRIO DE LOGIN --
-    // loginForm.addEventListener('submit', function(event) {
-    //     event.preventDefault();
-        
-    //     const formData = new FormData();
-    //     formData.append('email', document.getElementById('login-email').value);
-    //     formData.append('senha', document.getElementById('login-senha').value);
-
-    //     fetch('php/login.php', {
-    //         method: 'POST',
-    //         body: formData
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         alert(data.message);
-    //         console.log('Dados recebidos do PHP:', data);
-    //         if (data.status === 'success') {
-    //             if (data.tipo === 'treinador') {
-    //                 window.location.href = 'painel_treinador.php'; // Redireciona para o painel do treinador
-    //             } else {
-    //                 window.location.href = 'painel_aluno.php'; // Redireciona para o painel do aluno
-    //             } 
-    //         }
-    //     })
-    //     .catch(error => console.error('Erro:', error));
-    // });
-
-    // logoutBtn.addEventListener('click', (event) => {
-    //     event.preventDefault();
-    //     // Em um sistema real, aqui chamaríamos um script php/logout.php para destruir a sessão
-    //     userIcon.classList.add('hidden');
-    //     loginBtnHeader.classList.remove('hidden');
-    //     alert("Você saiu da sua conta.");
-    // });
-
-
-    // --- LÓGICA DA CALCULADORA DE IMC (sem alterações) ---
+    // --- LÓGICA DA CALCULADORA DE IMC ---
     const calcForm = document.getElementById('calc-form');
     const resultadoDiv = document.getElementById('resultado');
 
-    calcForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const peso = parseFloat(document.getElementById('peso').value);
-        const altura = parseFloat(document.getElementById('altura').value);
+    // Verifica se o formulário existe na página
+    if (calcForm) {
+        calcForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // 1. AQUI ESTÁ A MÁGICA: O JS lê o que o PHP escreveu no HTML
+            const estaLogado = calcForm.getAttribute('data-logado') === 'true';
+            const linkPainel = calcForm.getAttribute('data-link');
 
-        if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
-            exibirResultado('Por favor, insira valores válidos.', 'ruim');
-            return;
-        }
+            const peso = parseFloat(document.getElementById('peso').value);
+            const altura = parseFloat(document.getElementById('altura').value);
 
-        const alturaEmMetros = altura / 100;
-        const imc = peso / (alturaEmMetros * alturaEmMetros);
-        const { categoria, classificacao } = getClassificacaoIMC(imc);
-        
-        const mensagem = `
-            <h3>Seu resultado:</h3>
-            <p>Seu IMC é <strong>${imc.toFixed(2)}</strong>.</p>
-            <p>Classificação: <strong>${classificacao}</strong>.</p>
-            <p style="margin-top: 20px;">Este é um ótimo primeiro passo! Que tal um plano feito sob medida para você?</p>
-            <a href="login.html" class="btn btn-primary" style="margin-top: 10px; display: inline-block; text-decoration: none; color: white;">Registre-se para um Plano Personalizado!</a>
-        `;
+            // Validação
+            if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
+                alert("Por favor, insira valores válidos.");
+                return;
+            }
 
-        exibirResultado(mensagem, categoria);
-        
-    });
+            // Cálculo
+            const alturaEmMetros = altura / 100;
+            const imc = peso / (alturaEmMetros * alturaEmMetros);
+            const imcFormatado = imc.toFixed(2);
+            
+            let classificacao = '';
+            let cor = '';
 
-    function getClassificacaoIMC(imc) {
-        if (imc < 18.5) return { categoria: 'ruim', classificacao: 'Abaixo do peso (Precisa Melhorar)' };
-        if (imc >= 18.5 && imc <= 24.9) return { categoria: 'bom', classificacao: 'Peso normal (Em forma)' };
-        if (imc >= 25 && imc <= 29.9) return { categoria: 'medio', classificacao: 'Sobrepeso (Precisa Melhorar)' };
-        return { categoria: 'ruim', classificacao: 'Obesidade (Precisa Melhorar)' };
-    }
+            if (imc < 18.5) { classificacao = 'Abaixo do peso'; cor = '#ffc107'; }
+            else if (imc < 24.9) { classificacao = 'Peso normal (Em forma)'; cor = '#2ecc71'; }
+            else if (imc < 29.9) { classificacao = 'Sobrepeso'; cor = '#e67e22'; }
+            else { classificacao = 'Obesidade'; cor = '#e74c3c'; }
 
-    function exibirResultado(mensagem, categoria) {
-        resultadoDiv.innerHTML = mensagem;
-        resultadoDiv.className = 'resultado';
-        resultadoDiv.classList.add(categoria);
-        resultadoDiv.classList.remove('hidden');
+            // 2. DECIDE QUAL BOTÃO MOSTRAR BASEADO NO PHP
+            let htmlBotao = '';
+            let textoIncentivo = '';
+
+            if (estaLogado) {
+                // SE JÁ É ALUNO
+                textoIncentivo = 'Esse resultado já fica salvo no seu histórico!';
+                htmlBotao = `
+                    <a href="${linkPainel}" class="btn" style="background-color: #8A2BE2; color: white; display:inline-block; margin-top:10px; text-decoration:none; padding:10px 20px; border-radius:5px;">
+                        Ir para meu Painel
+                    </a>`;
+            } else {
+                // SE É VISITANTE
+                textoIncentivo = 'Este é um ótimo primeiro passo! Que tal um plano feito sob medida?';
+                htmlBotao = `
+                    <a href="login.html" class="btn" style="background-color: #8A2BE2; color: white; display:inline-block; margin-top:10px; text-decoration:none; padding:10px 20px; border-radius:5px;">
+                        Registre-se para um Plano Personalizado!
+                    </a>`;
+            }
+
+            // Mostra o resultado
+            resultadoDiv.classList.remove('hidden');
+            resultadoDiv.innerHTML = `
+                <h3 style="color: #8A2BE2;">Seu Resultado:</h3>
+                <p>Seu IMC é <strong>${imcFormatado}</strong>.</p>
+                <p>Classificação: <strong style="color:${cor}">${classificacao}</strong>.</p>
+                <p style="margin-top:15px; color:#ccc; font-size:0.9rem;">${textoIncentivo}</p>
+                ${htmlBotao}
+            `;
+        });
     }
 });
-
-
-
-//Tema escuro 
-
-
-
-
-
-
-
-
-
-
-//Tema claro

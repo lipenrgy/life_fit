@@ -10,14 +10,12 @@ $link_painel = "#";
 $texto_botao = "Comece sua avaliação"; 
 
 if ($esta_logado) {
-    // Conecta ao banco
     include 'php/conexao.php';
     
     $usuario_id = $_SESSION['usuario_id'];
     $nome_usuario = $_SESSION['usuario_nome'];
     $tipo_usuario = $_SESSION['usuario_tipo'];
 
-    // Define link e texto do botão da capa
     if ($tipo_usuario == 'aluno') {
         $link_painel = "painel_aluno.php";
         $texto_botao = "Acessar meu Treino";
@@ -26,7 +24,7 @@ if ($esta_logado) {
         $texto_botao = "Acessar meus Alunos";
     }
 
-    // Busca foto do usuário logado
+    // Busca foto
     $sql = "SELECT foto FROM usuarios WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $usuario_id);
@@ -40,13 +38,16 @@ if ($esta_logado) {
         }
     }
     
-    // Busca profissionais para o carrossel
+    // Busca profissionais
     $sql_profissionais = "SELECT * FROM usuarios WHERE tipo IN ('treinador', 'nutricionista') ORDER BY tipo DESC";
     $result_profissionais = $conn->query($sql_profissionais);
 } else {
-    include 'php/conexao.php';
-    $sql_profissionais = "SELECT * FROM usuarios WHERE tipo IN ('treinador', 'nutricionista') ORDER BY tipo DESC";
-    $result_profissionais = $conn->query($sql_profissionais);
+    // Se não estiver logado, busca profissionais também
+    if(file_exists('php/conexao.php')) {
+        include 'php/conexao.php';
+        $sql_profissionais = "SELECT * FROM usuarios WHERE tipo IN ('treinador', 'nutricionista') ORDER BY tipo DESC";
+        $result_profissionais = $conn->query($sql_profissionais);
+    }
 }
 ?>
 
@@ -56,96 +57,37 @@ if ($esta_logado) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life Fit</title>
-    
     <link rel="stylesheet" href="style.css">
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <style>
-        /* --- CSS do Menu do Usuário --- */
-        .nav-avatar {
-            width: 45px; height: 45px; border-radius: 50%; object-fit: cover;
-            border: 2px solid #8A2BE2; cursor: pointer; transition: transform 0.2s;
-        }
+        /* CSS do Menu do Usuário */
+        .nav-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #8A2BE2; cursor: pointer; transition: transform 0.2s; }
         .nav-avatar:hover { transform: scale(1.1); }
-        
-        .user-menu-container {
-            position: relative; display: flex; align-items: center;
-            gap: 10px; height: 100%; padding-bottom: 5px;
-        }
-
-        .home-dropdown {
-            display: none; position: absolute; top: 100%; right: 0;
-            background-color: var(--card-bg, #fff); min-width: 180px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2); border-radius: 8px;
-            z-index: 1000; padding: 10px 0; margin-top: 10px; 
-        }
-
-        /* A PONTE INVISÍVEL */
-        .home-dropdown::before {
-            content: ""; position: absolute; top: -20px; left: 0;
-            width: 100%; height: 20px; background: transparent;
-        }
-        
+        .user-menu-container { position: relative; display: flex; align-items: center; gap: 10px; height: 100%; padding-bottom: 5px; }
+        .home-dropdown { display: none; position: absolute; top: 100%; right: 0; background-color: var(--card-bg, #fff); min-width: 180px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000; padding: 10px 0; margin-top: 10px; }
+        .home-dropdown::before { content: ""; position: absolute; top: -20px; left: 0; width: 100%; height: 20px; background: transparent; }
         .dark-mode .home-dropdown { background-color: #1f1f1f; border: 1px solid #333; }
         .user-menu-container:hover .home-dropdown { display: block; }
-
-        .home-dropdown a {
-            color: #333; padding: 12px 20px; text-decoration: none;
-            display: block; font-size: 0.95rem; transition: background 0.2s;
-        }
+        .home-dropdown a { color: #333; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem; transition: background 0.2s; }
         .dark-mode .home-dropdown a { color: #fff; }
         .home-dropdown a:hover { background-color: #f1f1f1; color: #8A2BE2; }
         .dark-mode .home-dropdown a:hover { background-color: #333; }
 
-        /* --- ESTILOS EXTRAS PARA O CARROSSEL --- */
-        .swiper {
-            width: 100%;
-            padding: 40px 10px; /* Espaço para a sombra não cortar */
-        }
-        
-        .swiper-slide {
-            display: flex;
-            justify-content: center; /* Centraliza o card no slide */
-        }
-
-        /* Cores do Swiper combinando com o tema */
-        .swiper-button-next, .swiper-button-prev { color: #8A2BE2; }
-        .swiper-pagination-bullet-active { background: #8A2BE2; }
-        
-        /* Ajuste do card para ficar bonito no carrossel */
-        .trainer-card {
-            width: 100%;
-            max-width: 300px; /* Limita largura para não esticar demais */
-            background: #fff;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border: 1px solid transparent;
-            transition: transform 0.3s;
-        }
-
-        .dark-mode .trainer-card {
-            background: #1e1e1e;
-            border-color: #333;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .trainer-card:hover {
-            transform: translateY(-5px);
-            border-color: #8A2BE2;
-        }
+        /* Estilos do Carrossel */
+        .swiper { width: 100%; padding: 40px 10px; }
+        .swiper-slide { display: flex; justify-content: center; height: auto; }
+        .trainer-card { width: 100%; max-width: 320px; background: #fff; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 1px solid transparent; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .dark-mode .trainer-card { background: #1e1e1e; border-color: #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .trainer-card:hover { transform: translateY(-5px); border-color: #8A2BE2; }
+        .swiper-pagination-bullet-active { background: #8A2BE2 !important; }
+        .swiper-button-next, .swiper-button-prev { color: #8A2BE2 !important; }
     </style>
 
     <script>
     (function() {
         const theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark-mode');
-        } else if (theme === 'light') {
-            document.documentElement.classList.remove('dark-mode');
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark-mode');
         }
     })();
@@ -179,13 +121,11 @@ if ($esta_logado) {
                 <?php if ($esta_logado): ?>
                     <div class="user-menu-container">
                         <span style="font-size: 0.9em; font-weight: bold;">Olá, <?php echo htmlspecialchars($nome_usuario); ?></span>
-                        
                         <?php if ($foto_perfil): ?>
                             <img src="<?php echo $foto_perfil; ?>" alt="Perfil" class="nav-avatar">
                         <?php else: ?>
                             <span style="font-size: 2rem; cursor: pointer;">👤</span>
                         <?php endif; ?>
-
                         <div class="home-dropdown">
                             <a href="<?php echo $link_painel; ?>"><strong>Meu Painel</strong></a>
                             <a href="#">Configurações</a>
@@ -194,11 +134,8 @@ if ($esta_logado) {
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="login.html">
-                        <button id="open-modal-btn" class="btn">Login</button>
-                    </a>
+                    <a href="login.html"><button id="open-modal-btn" class="btn">Login</button></a>
                 <?php endif; ?>
-
             </div>
         </div>
     </header>
@@ -209,13 +146,11 @@ if ($esta_logado) {
                 <div class="hero-text">
                     <h1>Transforme seu corpo, eleve sua mente.</h1>
                     <p>Na Life Fit, oferecemos o melhor ambiente e os melhores profissionais para você alcançar seus objetivos de forma saudável e eficiente.</p>
-                    
                     <?php if ($esta_logado): ?>
                         <a href="<?php echo $link_painel; ?>" class="btn btn-primary"><?php echo $texto_botao; ?></a>
                     <?php else: ?>
                         <a href="#calculo" class="btn btn-primary">Comece sua avaliação</a>
                     <?php endif; ?>
-                    
                 </div>
                 <div class="hero-image">
                     <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" alt="Pessoa se exercitando na academia">
@@ -225,54 +160,35 @@ if ($esta_logado) {
 
         <section id="profissionais" class="section">
             <div class="container">
-                <h2 style="text-align: center; margin-bottom: 30px;">Conheça Nossos Profissionais</h2>
-                
+                <h2 style="text-align: center; margin-bottom: 30px;">Conheça Nossa Equipe</h2>
                 <div class="swiper mySwiper">
                     <div class="swiper-wrapper">
                         <?php 
-                        if ($result_profissionais && $result_profissionais->num_rows > 0) {
+                        if (isset($result_profissionais) && $result_profissionais && $result_profissionais->num_rows > 0) {
                             while($row = $result_profissionais->fetch_assoc()) {
-                                
                                 $nome = htmlspecialchars($row['nome']);
                                 $id_prof = $row['id'];
                                 $tipo = $row['tipo'];
-                                
-                                // Lógica da Foto
-                                $foto_exibir = "";
-                                if (!empty($row['foto']) && file_exists($row['foto'])) {
-                                    $foto_exibir = $row['foto'] . "?v=" . time();
-                                } else {
-                                    if ($tipo == 'treinador') {
-                                        $foto_exibir = "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80"; 
-                                    } else {
-                                        $foto_exibir = "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80";
-                                    }
-                                }
-
+                                $foto_exibir = (!empty($row['foto']) && file_exists($row['foto'])) ? $row['foto'] . "?v=" . time() : (($tipo == 'treinador') ? "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80" : "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80");
                                 $cargo = ($tipo == 'treinador') ? "TREINADOR" : "NUTRICIONISTA";
                                 $desc = ($tipo == 'treinador') ? "Especialista em Performance" : "Nutrição Esportiva";
                                 
-                                // Estrutura do Slide
                                 echo '<div class="swiper-slide">';
                                 echo '  <div class="trainer-card">';
                                 echo '      <img src="' . $foto_exibir . '" alt="' . $nome . '" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid #8A2BE2;">';
                                 echo '      <h3>' . $nome . '</h3>';
                                 echo '      <p style="color: #8A2BE2; font-weight: bold; text-transform: uppercase; margin: 5px 0;">' . $cargo . '</p>';
                                 echo '      <p style="font-size: 0.9em; color: #888; margin-bottom: 15px;">' . $desc . '</p>';
-                                
-                                // Botão de Escolher (Só para Alunos)
                                 if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] == 'aluno') {
                                     echo '<button onclick="escolherProfissional('.$id_prof.', \''.$tipo.'\')" class="btn" style="padding: 10px 20px; font-size: 0.9rem; background-color: #8A2BE2; color: white; border: none; border-radius: 5px; cursor: pointer;">Escolher</button>';
                                 }
-                                echo '  </div>'; // Fim trainer-card
-                                echo '</div>'; // Fim swiper-slide
+                                echo '  </div></div>';
                             }
                         } else {
                             echo '<div class="swiper-slide"><p>Nenhum profissional cadastrado.</p></div>';
                         }
                         ?>
                     </div>
-                    
                     <div class="swiper-pagination"></div>
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
@@ -284,7 +200,7 @@ if ($esta_logado) {
             <div class="container">
                 <h2>Calculadora de Saúde Física</h2>
                 <p>Insira seus dados abaixo para uma avaliação inicial baseada no seu IMC.</p>
-                <form id="calc-form" class="calc-form">
+                <form id="calc-form" class="calc-form" data-logado="<?php echo $esta_logado ? 'true' : 'false'; ?>" data-link="<?php echo $link_painel; ?>">
                     <div class="form-group">
                         <label for="peso">Peso (kg)</label>
                         <input type="number" id="peso" step="0.1" placeholder="Ex: 75.5" required>
@@ -305,13 +221,10 @@ if ($esta_logado) {
                 <p>Fundada em 2025, Life Fit nasceu com a missão de democratizar o acesso à saúde e ao bem-estar.</p>
             </div>
         </section>
-
     </main>
 
     <footer>
         <div class="container">
-            <p><strong>Endereço:</strong> Rua do sol, 123 - Centro, São Luis - MA</p>
-            <p><strong>Telefone:</strong> (98) 99999-8888</p>
             <p>&copy; 2025 Life Fit. Todos os direitos reservados.</p>
         </div>
     </footer>
@@ -321,50 +234,27 @@ if ($esta_logado) {
     <script>
     // Inicializa o Carrossel
     var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 1, // Celular: 1 card
-        spaceBetween: 20, // Espaço entre cards
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
+        slidesPerView: 1, spaceBetween: 20,
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
         breakpoints: {
-            640: {
-                slidesPerView: 2, // Tablet: 2 cards
-                spaceBetween: 20,
-            },
-            1024: {
-                slidesPerView: 3, // PC: 3 cards
-                spaceBetween: 30,
-            },
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 3, spaceBetween: 30 },
         },
     });
 
     // Função de Escolher Profissional
     function escolherProfissional(idProfissional, tipoProfissional) {
-        if(!confirm("Deseja escolher este profissional como seu " + tipoProfissional + "?")) {
-            return;
-        }
-
+        if(!confirm("Deseja escolher este profissional como seu " + tipoProfissional + "?")) { return; }
         const formData = new FormData();
         formData.append('id_profissional', idProfissional);
         formData.append('tipo_profissional', tipoProfissional);
 
-        fetch('php/api/escolher_profissional.php', {
-            method: 'POST',
-            body: formData
-        })
+        fetch('php/api/escolher_profissional.php', { method: 'POST', body: formData })
         .then(response => response.json())
         .then(data => {
-            if(data.status === 'success') {
-                alert(data.message);
-                // location.reload(); 
-            } else {
-                alert("Erro: " + data.message);
-            }
+            if(data.status === 'success') { alert(data.message); } 
+            else { alert("Erro: " + data.message); }
         })
         .catch(error => console.error('Erro:', error));
     }
