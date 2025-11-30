@@ -332,3 +332,146 @@ input:checked + .slider:before {
 
 .icon-sun { margin-left: 2px; }
 .icon-moon { margin-right: 2px; }
+
+
+
+/* Fundo escuro atrás da janela */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Fundo preto transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+/* A janela em si */
+.modal-content {
+    background: var(--fundo-secundario, #1f1f1f); /* Usa tua cor escura */
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border: 1px solid #333;
+    color: var(--texto-primario, #fff);
+    position: relative;
+}
+
+/* Quando a classe 'open' é adicionada via JS, o modal aparece */
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Botão de fechar (X) */
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+}
+.close-modal:hover { color: #fff; }
+
+/* Estilo do input de arquivo */
+.file-upload-wrapper {
+    margin: 20px 0;
+    border: 2px dashed #444;
+    padding: 20px;
+    border-radius: 8px;
+}
+/* Fundo escuro atrás da janela */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Fundo preto transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+/* A janela em si */
+.modal-content {
+    background: var(--fundo-secundario, #1f1f1f); /* Usa tua cor escura */
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border: 1px solid #333;
+    color: var(--texto-primario, #fff);
+    position: relative;
+}
+
+/* Quando a classe 'open' é adicionada via JS, o modal aparece */
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Botão de fechar (X) */
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+}
+.close-modal:hover { color: #fff; }
+
+/* Estilo do input de arquivo */
+.file-upload-wrapper {
+    margin: 20px 0;
+    border: 2px dashed #444;
+    padding: 20px;
+    border-radius: 8px;
+}
+/* --- FOTO DE PERFIL NO HEADER (ATUALIZADO) --- */
+
+/* Estilo da imagem redonda */
+.user-avatar {
+    width: 55px;        /* Aumentei de 40px para 55px */
+    height: 55px;       /* Aumentei de 40px para 55px */
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--violeta);
+    cursor: pointer;
+    vertical-align: middle;
+    transition: transform 0.2s; /* Efeito suave ao passar o mouse */
+}
+
+.user-avatar:hover {
+    transform: scale(1.1); /* Um pequeno zoom quando passa o mouse */
+}
+
+/* Ajuste para alinhar o ícone/foto com o dropdown */
+.user-icon-painel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 55px; /* Garante que o container tenha a mesma altura */
+}
+
+/* Aumentei também o bonequinho padrão caso não tenha foto */
+.user-icon-painel span {
+    font-size: 2.2rem; /* Aumentei de 1.8rem para 2.2rem */
+}

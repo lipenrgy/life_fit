@@ -15,33 +15,25 @@ include 'template/header.php';
             padding: 20px;
         }
         .plano-display {
-            background-color: #fff; /* Fundo branco para garantir contraste */
+            background-color: var(--fundo-secundario);
             padding: 25px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--sombra);
             margin-bottom: 30px;
-            border: 1px solid #eee;
+            border: 1px solid var(--borda);
         }
         .plano-display h2 {
-            color: #6C63FF; /* Cor violeta */
+            color: var(--violeta);
             margin-top: 0;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--fundo-primario);
             padding-bottom: 10px;
         }
         .plano-conteudo {
-            white-space: pre-wrap; /* Mantém os parágrafos */
+            white-space: pre-wrap;
             line-height: 1.6;
             font-size: 1.1rem;
-            color: #333; /* Cor escura para garantir leitura */
+            color: var(--texto-secundario);
             min-height: 50px;
-        }
-        /* Modo escuro */
-        .dark-mode .plano-display {
-            background-color: #2c2c2c;
-            border-color: #444;
-        }
-        .dark-mode .plano-conteudo {
-            color: #e0e0e0;
         }
     </style>
 </head>
@@ -49,7 +41,7 @@ include 'template/header.php';
 
     <main class="painel-container-aluno">
         
-        <h1 style="color: #6C63FF;">Meu Painel</h1>
+        <h1 style="color: var(--violeta); margin-bottom: 20px;">Meu Painel</h1>
         
         <section class="plano-display">
             <h2>Meu Plano de Treino</h2>
@@ -67,35 +59,68 @@ include 'template/header.php';
 
     </main>
 
+    <div id="modal-foto" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModalFoto()">&times;</span>
+            <h3>Alterar Foto de Perfil</h3>
+            <p style="font-size: 0.9em; color: #aaa;">Escolha uma imagem JPG ou PNG</p>
+            
+            <form action="php/api/upload_foto.php" method="POST" enctype="multipart/form-data">
+                <div class="file-upload-wrapper">
+                    <input type="file" name="foto_perfil" id="foto_perfil" required accept="image/png, image/jpeg">
+                </div>
+                <button type="submit" class="btn" style="width: 100%; background-color: var(--violeta); color: white;">Atualizar Foto</button>
+            </form>
+        </div>
+    </div>
+
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- 1. LÓGICA DE BUSCAR O PLANO (EXISTENTE) ---
         const divTreino = document.getElementById('treino-conteudo');
         const divDieta = document.getElementById('dieta-conteudo');
 
         fetch('php/api/buscar_meu_plano.php')
-            .then(response => {
-                // Verifica se a resposta é válida antes de tentar ler o JSON
-                if (!response.ok) {
-                    throw new Error('Erro na rede ou arquivo não encontrado');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log("Dados recebidos:", data); // Para debug no F12
-
                 if (data.status === 'error') {
                     divTreino.innerHTML = '<span style="color:red">Sessão expirada. Faça login novamente.</span>';
                 } else {
-                    // Atualiza o texto visualmente
                     divTreino.innerText = data.treino;
                     divDieta.innerText = data.dieta;
                 }
             })
             .catch(error => {
                 console.error("Erro no fetch:", error);
-                divTreino.innerHTML = '<span style="color:red">Erro ao carregar dados. Verifique o console.</span>';
-                divDieta.innerHTML = '<span style="color:red">Erro ao carregar dados.</span>';
+                divTreino.innerText = "Erro ao carregar dados.";
             });
+
+        // --- 2. LÓGICA DO MODAL DE FOTO (NOVO) ---
+        const btnPerfil = document.getElementById('btn-meu-perfil');
+        
+        if (btnPerfil) {
+            btnPerfil.addEventListener('click', function(e) {
+                e.preventDefault();
+                abrirModalFoto();
+            });
+        }
+    });
+
+    // Funções globais para o modal
+    function abrirModalFoto() {
+        document.getElementById('modal-foto').classList.add('open');
+    }
+
+    function fecharModalFoto() {
+        document.getElementById('modal-foto').classList.remove('open');
+    }
+
+    // Fecha ao clicar fora
+    document.getElementById('modal-foto').addEventListener('click', function(e) {
+        if (e.target === this) {
+            fecharModalFoto();
+        }
     });
     </script>
 

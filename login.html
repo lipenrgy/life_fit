@@ -179,10 +179,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             alert(data.message);
             if (data.status === 'success') {
-                // Se der certo, volta para a tela de login
-                wrapper.classList.add('animate-signIn');
-                wrapper.classList.remove('animate-signUp');
-                formRegister.reset();
+                // ANTES: Redirecionava para os painéis
+                // AGORA: Manda de volta para a Home, mas agora logado
+                window.location.href = 'index.php'; 
+            } else {
+                alert('Erro: ' + data.message);
             }
         })
         .catch(error => console.error('Erro no registro:', error));

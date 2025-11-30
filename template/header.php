@@ -1,18 +1,38 @@
 <?php
-// VERIFICAÇÃO IMPORTANTE: Inicia a sessão se ela ainda não existir
+// 1. Inicia sessão se não existir
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Verifica se o usuário está logado. Se não estiver, manda pro login.
+// 2. Verifica login
 if (!isset($_SESSION['usuario_id'])) {
-    // Ajuste o caminho "index.html" conforme a estrutura das suas pastas
     header("Location: ../index.html"); 
     exit;
 }
 
-// Pega o nome de forma segura. Se estiver vazio, usa "Usuário"
+// 3. Conecta ao banco para buscar a foto atualizada
+// Usamos __DIR__ para garantir que ele acha a pasta php independente de onde o header é chamado
+require_once __DIR__ . '/../php/conexao.php';
+
+$usuario_id = $_SESSION['usuario_id'];
 $nome_usuario = $_SESSION['usuario_nome'] ?? 'Aluno';
+$foto_perfil = null;
+
+// Busca a foto no banco
+$sql = "SELECT foto FROM usuarios WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $usuario_id);
+$stmt->execute();
+$resultado = $stmt->get_result();
+
+if ($resultado->num_rows > 0) {
+    $dados = $resultado->fetch_assoc();
+    // Verifica se o campo não está vazio e se o arquivo existe fisicamente
+    if (!empty($dados['foto']) && file_exists(__DIR__ . '/../' . $dados['foto'])) {
+        // Adiciona time() para evitar cache (a foto atualiza na hora quando troca)
+        $foto_perfil = $dados['foto'] . "?v=" . time();
+    }
+}
 ?>
 
 <header class="painel-header">
@@ -30,9 +50,14 @@ $nome_usuario = $_SESSION['usuario_nome'] ?? 'Aluno';
         </div>
 
         <div class="user-icon-painel">
-            <span>👤</span>
+            <?php if ($foto_perfil): ?>
+                <img src="<?php echo $foto_perfil; ?>" alt="Perfil" class="user-avatar">
+            <?php else: ?>
+                <span>👤</span>
+            <?php endif; ?>
+
             <div class="dropdown-menu">
-                <a href="#">Meu Perfil</a>
+                <a href="#" id="btn-meu-perfil">Meu Perfil</a>
                 <a href="#">Configurações</a>
                 <a href="php/logout.php" class="btn-sair">Sair</a>
             </div>
