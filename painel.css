@@ -475,3 +475,32 @@ input:checked + .slider:before {
 .user-icon-painel span {
     font-size: 2.2rem; /* Aumentei de 1.8rem para 2.2rem */
 }
+
+
+/* --- Botão Home (Casinha) --- */
+
+/* 1. Comportamento padrão (Modo Claro) -> Cor escura */
+.btn-home {
+    display: flex;
+    align-items: center;
+    color: #333333; /* Cinza escuro para aparecer no fundo branco */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    margin-right: 15px; /* Espaço para não grudar nos outros ícones */
+}
+
+/* 2. Comportamento quando o Modo Escuro está ativado -> Cor branca */
+html.dark-mode .btn-home {
+    color: #ffffff; /* Branco para aparecer no fundo preto */
+}
+
+/* 3. Quando passa o mouse -> Cor roxa (igual nos dois modos) */
+.btn-home:hover {
+    color: #9b5de5;
+}
+
+/* Ajuste do tamanho do ícone */
+.btn-home svg {
+    width: 24px;
+    height: 24px;
+}

@@ -6,12 +6,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // 2. Verifica login
 if (!isset($_SESSION['usuario_id'])) {
-    // Correto: aponta para php
     header("Location: ../index.php"); 
     exit;
 }
+
 // 3. Conecta ao banco para buscar a foto atualizada
-// Usamos __DIR__ para garantir que ele acha a pasta php independente de onde o header é chamado
 require_once __DIR__ . '/../php/conexao.php';
 
 $usuario_id = $_SESSION['usuario_id'];
@@ -27,9 +26,7 @@ $resultado = $stmt->get_result();
 
 if ($resultado->num_rows > 0) {
     $dados = $resultado->fetch_assoc();
-    // Verifica se o campo não está vazio e se o arquivo existe fisicamente
     if (!empty($dados['foto']) && file_exists(__DIR__ . '/../' . $dados['foto'])) {
-        // Adiciona time() para evitar cache (a foto atualiza na hora quando troca)
         $foto_perfil = $dados['foto'] . "?v=" . time();
     }
 }
@@ -39,6 +36,7 @@ if ($resultado->num_rows > 0) {
     <h1>Bem-vindo, <?php echo htmlspecialchars($nome_usuario); ?>!</h1>
 
     <div class="header-controls">
+        
         <div class="theme-switch-wrapper">
             <label class="theme-switch" for="checkbox-theme">
                 <input type="checkbox" id="checkbox-theme" />
@@ -48,6 +46,13 @@ if ($resultado->num_rows > 0) {
                 </div>
             </label>
         </div>
+
+        <a href="index.php" class="btn-home" title="Voltar ao Início">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        </a>
 
         <div class="user-icon-painel">
             <?php if ($foto_perfil): ?>
@@ -62,5 +67,6 @@ if ($resultado->num_rows > 0) {
                 <a href="php/logout.php" class="btn-sair">Sair</a>
             </div>
         </div>
+
     </div>
 </header>
