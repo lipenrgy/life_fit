@@ -6,10 +6,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // 2. Verifica login
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: ../index.html"); 
+    // Correto: aponta para php
+    header("Location: ../index.php"); 
     exit;
 }
-
 // 3. Conecta ao banco para buscar a foto atualizada
 // Usamos __DIR__ para garantir que ele acha a pasta php independente de onde o header é chamado
 require_once __DIR__ . '/../php/conexao.php';
