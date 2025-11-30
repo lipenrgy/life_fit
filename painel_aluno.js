@@ -1,34 +1,20 @@
-// painel_aluno.js
-
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Pegamos os elementos EXATOS que mostraste no teu HTML
-    const divTreino = document.getElementById('treino-conteudo');
-    const divDieta = document.getElementById('dieta-conteudo');
+    // 1. Pega os lugares onde vamos escrever
+    const displayTreino = document.getElementById('meu-treino');
+    const displayDieta = document.getElementById('minha-dieta');
 
-    function carregarMeuPlano() {
-        // Chama o PHP que criámos acima
-        fetch('php/api/buscar_meu_plano.php')
-            .then(response => response.json())
-            .then(data => {
-                // Se der erro de login (status error), avisa
-                if (data.status === 'error') {
-                    divTreino.innerHTML = '<p style="color:red">Sessão expirada. Faça login novamente.</p>';
-                    return;
-                }
-
-                // Coloca o texto que veio do banco dentro das caixas
-                // Usamos innerHTML para respeitar as quebras de linha se houver
-                divTreino.innerText = data.treino;
-                divDieta.innerText = data.dieta;
-            })
-            .catch(error => {
-                console.error("Erro:", error);
-                divTreino.innerText = "Erro ao carregar o treino.";
-                divDieta.innerText = "Erro ao carregar a dieta.";
-            });
-    }
-
-    // Executa a função imediatamente
-    carregarMeuPlano();
+    // 2. Busca os dados no PHP "Misturador"
+    fetch('php/api/meu_plano.php')
+        .then(response => response.json())
+        .then(data => {
+            // 3. Escreve na tela (respeitando as quebras de linha com white-space no CSS)
+            if(displayTreino) displayTreino.innerText = data.treino;
+            if(displayDieta) displayDieta.innerText = data.dieta;
+        })
+        .catch(error => {
+            console.error('Erro ao buscar plano:', error);
+            if(displayTreino) displayTreino.innerText = "Erro ao carregar treino.";
+            if(displayDieta) displayDieta.innerText = "Erro ao carregar dieta.";
+        });
 });

@@ -39,23 +39,17 @@ include 'template/header.php';
 </head>
 <body>
 
-    <main class="painel-container-aluno">
+<main class="painel-container-aluno">
         
-        <h1 style="color: var(--violeta); margin-bottom: 20px;">Meu Painel</h1>
-        
-        <section class="plano-display">
-            <h2>Meu Plano de Treino</h2>
-            <div id="treino-conteudo" class="plano-conteudo">
-                ⏳ Buscando seu treino...
-            </div>
-        </section>
+        <div class="plano-display">
+            <h2>💪 Meu Plano de Treino</h2>
+            <p id="meu-treino" class="plano-conteudo">Carregando...</p>
+        </div>
 
-        <section class="plano-display">
-            <h2>Minha Dieta</h2>
-            <div id="dieta-conteudo" class="plano-conteudo">
-                ⏳ Buscando sua dieta...
-            </div>
-        </section>
+        <div class="plano-display">
+            <h2>🥗 Minha Dieta</h2>
+            <p id="minha-dieta" class="plano-conteudo">Carregando...</p>
+        </div>
 
     </main>
 
@@ -125,5 +119,6 @@ include 'template/header.php';
     </script>
 
     <script src="theme-toggle.js"></script>
+    <script src="painel_aluno.js"></script>
 </body>
 </html>

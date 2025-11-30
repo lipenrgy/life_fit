@@ -38,18 +38,29 @@ include 'template/header.php';
 
         <section class="area-plano">
             <h2 id="aluno-selecionado-nome">Selecione um aluno da lista</h2>
-            
             <form id="form-plano" class="hidden">
-                <input type="hidden" id="aluno-id-hidden" name="aluno_id">
-                
-                <label for="treino"><h3>Plano de Treino</h3></label>
-                <textarea id="treino" name="treino" placeholder="Descreva o treino aqui..."></textarea>
-                
-                <label for="dieta"><h3>Plano de Dieta</h3></label>
-                <textarea id="dieta" name="dieta" placeholder="Descreva a dieta aqui..."></textarea>
-                
-                <button type="submit">Salvar Plano</button>
-            </form>
+    <input type="hidden" id="aluno-id-hidden" name="aluno_id">
+    
+    <?php $tipo = $_SESSION['usuario_tipo']; ?>
+
+    <?php if ($tipo === 'treinador'): ?>
+        <div class="bloco-treino">
+            <label for="treino"><h3>🏋️‍♂️ Plano de Treino</h3></label>
+            <textarea id="treino" name="treino" placeholder="Descreva a rotina de exercícios..."></textarea>
+        </div>
+        <input type="hidden" name="dieta" value=""> 
+    <?php endif; ?>
+
+    <?php if ($tipo === 'nutricionista'): ?>
+        <div class="bloco-dieta">
+            <label for="dieta"><h3>🍎 Plano de Dieta</h3></label>
+            <textarea id="dieta" name="dieta" placeholder="Descreva o plano alimentar..."></textarea>
+        </div>
+        <input type="hidden" name="treino" value="">
+    <?php endif; ?>
+    
+    <button type="submit">Salvar Plano</button>
+</form>
         </section>
 
     </main>
@@ -100,6 +111,7 @@ include 'template/header.php';
         });
     </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="painel_treinador.js"></script>
     <script src="theme-toggle.js"></script>
 </body>
