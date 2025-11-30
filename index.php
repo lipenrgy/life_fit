@@ -26,7 +26,7 @@ if ($esta_logado) {
         $texto_botao = "Acessar meus Alunos";
     }
 
-    // Busca foto
+    // Busca foto do usuário logado
     $sql = "SELECT foto FROM usuarios WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $usuario_id);
@@ -40,7 +40,7 @@ if ($esta_logado) {
         }
     }
     
-    // Busca profissionais
+    // Busca profissionais para o carrossel
     $sql_profissionais = "SELECT * FROM usuarios WHERE tipo IN ('treinador', 'nutricionista') ORDER BY tipo DESC";
     $result_profissionais = $conn->query($sql_profissionais);
 } else {
@@ -56,10 +56,13 @@ if ($esta_logado) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life Fit</title>
+    
     <link rel="stylesheet" href="style.css">
     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
     <style>
-        /* CSS do Menu do Usuário */
+        /* --- CSS do Menu do Usuário --- */
         .nav-avatar {
             width: 45px; height: 45px; border-radius: 50%; object-fit: cover;
             border: 2px solid #8A2BE2; cursor: pointer; transition: transform 0.2s;
@@ -94,6 +97,45 @@ if ($esta_logado) {
         .dark-mode .home-dropdown a { color: #fff; }
         .home-dropdown a:hover { background-color: #f1f1f1; color: #8A2BE2; }
         .dark-mode .home-dropdown a:hover { background-color: #333; }
+
+        /* --- ESTILOS EXTRAS PARA O CARROSSEL --- */
+        .swiper {
+            width: 100%;
+            padding: 40px 10px; /* Espaço para a sombra não cortar */
+        }
+        
+        .swiper-slide {
+            display: flex;
+            justify-content: center; /* Centraliza o card no slide */
+        }
+
+        /* Cores do Swiper combinando com o tema */
+        .swiper-button-next, .swiper-button-prev { color: #8A2BE2; }
+        .swiper-pagination-bullet-active { background: #8A2BE2; }
+        
+        /* Ajuste do card para ficar bonito no carrossel */
+        .trainer-card {
+            width: 100%;
+            max-width: 300px; /* Limita largura para não esticar demais */
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid transparent;
+            transition: transform 0.3s;
+        }
+
+        .dark-mode .trainer-card {
+            background: #1e1e1e;
+            border-color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .trainer-card:hover {
+            transform: translateY(-5px);
+            border-color: #8A2BE2;
+        }
     </style>
 
     <script>
@@ -183,52 +225,57 @@ if ($esta_logado) {
 
         <section id="profissionais" class="section">
             <div class="container">
-                <h2>Nossos Profissionais</h2>
-                <div class="trainers-grid">
-                    <?php 
-                    if ($result_profissionais && $result_profissionais->num_rows > 0) {
-                        while($row = $result_profissionais->fetch_assoc()) {
-                            
-                            $nome = htmlspecialchars($row['nome']);
-                            $id_prof = $row['id'];
-                            $tipo = $row['tipo'];
-                            
-                            $foto_exibir = "";
-                            if (!empty($row['foto']) && file_exists($row['foto'])) {
-                                $foto_exibir = $row['foto'] . "?v=" . time();
-                            } else {
-                                if ($tipo == 'treinador') {
-                                    $foto_exibir = "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80"; 
+                <h2 style="text-align: center; margin-bottom: 30px;">Conheça Nossos Profissionais</h2>
+                
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <?php 
+                        if ($result_profissionais && $result_profissionais->num_rows > 0) {
+                            while($row = $result_profissionais->fetch_assoc()) {
+                                
+                                $nome = htmlspecialchars($row['nome']);
+                                $id_prof = $row['id'];
+                                $tipo = $row['tipo'];
+                                
+                                // Lógica da Foto
+                                $foto_exibir = "";
+                                if (!empty($row['foto']) && file_exists($row['foto'])) {
+                                    $foto_exibir = $row['foto'] . "?v=" . time();
                                 } else {
-                                    $foto_exibir = "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80";
+                                    if ($tipo == 'treinador') {
+                                        $foto_exibir = "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80"; 
+                                    } else {
+                                        $foto_exibir = "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80";
+                                    }
                                 }
-                            }
 
-                            if ($tipo == 'treinador') {
-                                $cargo = "TREINADOR";
-                                $desc = "Especialista em Performance";
-                            } else {
-                                $cargo = "NUTRICIONISTA";
-                                $desc = "Nutrição Esportiva";
+                                $cargo = ($tipo == 'treinador') ? "TREINADOR" : "NUTRICIONISTA";
+                                $desc = ($tipo == 'treinador') ? "Especialista em Performance" : "Nutrição Esportiva";
+                                
+                                // Estrutura do Slide
+                                echo '<div class="swiper-slide">';
+                                echo '  <div class="trainer-card">';
+                                echo '      <img src="' . $foto_exibir . '" alt="' . $nome . '" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid #8A2BE2;">';
+                                echo '      <h3>' . $nome . '</h3>';
+                                echo '      <p style="color: #8A2BE2; font-weight: bold; text-transform: uppercase; margin: 5px 0;">' . $cargo . '</p>';
+                                echo '      <p style="font-size: 0.9em; color: #888; margin-bottom: 15px;">' . $desc . '</p>';
+                                
+                                // Botão de Escolher (Só para Alunos)
+                                if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] == 'aluno') {
+                                    echo '<button onclick="escolherProfissional('.$id_prof.', \''.$tipo.'\')" class="btn" style="padding: 10px 20px; font-size: 0.9rem; background-color: #8A2BE2; color: white; border: none; border-radius: 5px; cursor: pointer;">Escolher</button>';
+                                }
+                                echo '  </div>'; // Fim trainer-card
+                                echo '</div>'; // Fim swiper-slide
                             }
-
-                            echo '<div class="trainer-card">';
-                            echo '  <img src="' . $foto_exibir . '" alt="' . $nome . '" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 15px;">';
-                            echo '  <h3>' . $nome . '</h3>';
-                            echo '  <p style="color: var(--primary-color); font-weight: bold; text-transform: uppercase; margin: 5px 0;">' . $cargo . '</p>';
-                            echo '  <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">' . $desc . '</p>';
-                            
-                            // BOTÃO SÓ PARA ALUNOS
-                            if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] == 'aluno') {
-                                echo '<button onclick="escolherProfissional('.$id_prof.', \''.$tipo.'\')" class="btn" style="padding: 8px 15px; font-size: 0.8rem; background-color: #6C63FF; color: white; border: none; border-radius: 5px; cursor: pointer;">Escolher como meu ' . ucfirst($tipo) . '</button>';
-                            }
-                            
-                            echo '</div>';
+                        } else {
+                            echo '<div class="swiper-slide"><p>Nenhum profissional cadastrado.</p></div>';
                         }
-                    } else {
-                        echo '<p>Ainda não temos profissionais cadastrados no sistema.</p>';
-                    }
-                    ?>
+                        ?>
+                    </div>
+                    
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
             </div>
         </section>
@@ -269,7 +316,34 @@ if ($esta_logado) {
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
+    // Inicializa o Carrossel
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1, // Celular: 1 card
+        spaceBetween: 20, // Espaço entre cards
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+            640: {
+                slidesPerView: 2, // Tablet: 2 cards
+                spaceBetween: 20,
+            },
+            1024: {
+                slidesPerView: 3, // PC: 3 cards
+                spaceBetween: 30,
+            },
+        },
+    });
+
+    // Função de Escolher Profissional
     function escolherProfissional(idProfissional, tipoProfissional) {
         if(!confirm("Deseja escolher este profissional como seu " + tipoProfissional + "?")) {
             return;
