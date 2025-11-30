@@ -1,26 +1,26 @@
 <?php
+// php/api/buscar_alunos.php
 session_start();
-include '../conexao.php'; // Acessa o arquivo de conexão que está uma pasta acima
+
+// O "../" é o segredo! Ele sobe da pasta 'api' para a pasta 'php' para achar a conexão.
+include '../conexao.php';
 
 header('Content-Type: application/json');
 
-// Medida de segurança: verifica se o usuário é um treinador
-if (!isset($_SESSION['usuario_tipo']) || $_SESSION['usuario_tipo'] !== 'treinador') {
-    echo json_encode(['status' => 'error', 'message' => 'Acesso negado']);
-    exit;
-}
-
+// Busca apenas usuários do tipo 'aluno'
 $sql = "SELECT id, nome FROM usuarios WHERE tipo = 'aluno' ORDER BY nome ASC";
-$resultado = $conexao->query($sql);
+$result = $conn->query($sql);
 
 $alunos = [];
-if ($resultado->num_rows > 0) {
-    while($linha = $resultado->fetch_assoc()) {
-        $alunos[] = $linha;
+
+if ($result && $result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $alunos[] = $row;
     }
 }
 
+// Retorna a lista em JSON para o Javascript ler
 echo json_encode($alunos);
 
-$conexao->close();
+$conn->close();
 ?>

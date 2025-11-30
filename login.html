@@ -35,8 +35,8 @@
 
                 <div class="user-type-buttons three-buttons" id="type-buttons-container">
                   <button type="button" class="type-btn selected" data-tipo="aluno">Paciente</button>
-                  <button type="button" class="type-btn" data-tipo="treinador">Nutricionista</button>
-                  <button type="button" class="type-btn" data-tipo="treinador">Personal</button>
+                <button type="button" class="type-btn" data-tipo="nutricionista">Nutricionista</button>
+                  <button type="button" class="type-btn" data-tipo="treinador">treinador</button>
                 </div>
 
                 <input type="hidden" id="reg-type" value="aluno">
@@ -124,17 +124,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 3. CONEXÃO COM O PHP (FETCH API) ---
 
+   
     // A. LOGIN
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(event) {
         event.preventDefault();
 
         const formData = new FormData();
-        // Pegando os dados dos novos IDs do HTML atualizado
         formData.append('email', document.getElementById('login-email').value);
         formData.append('senha', document.getElementById('login-senha').value);
 
-        // Envia para a pasta php/login.php
         fetch('php/login.php', {
             method: 'POST',
             body: formData
@@ -142,12 +141,15 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Redireciona baseado no tipo retornado pelo PHP
-                if (data.tipo === 'treinador') {
+                
+                // --- AQUI ESTAVA O ERRO ---
+                // Agora verificamos se é treinador OU (||) nutricionista
+                if (data.tipo === 'treinador' || data.tipo === 'nutricionista') {
                     window.location.href = 'painel_treinador.php';
                 } else {
                     window.location.href = 'painel_aluno.php';
                 }
+                
             } else {
                 alert('Erro: ' + data.message);
             }

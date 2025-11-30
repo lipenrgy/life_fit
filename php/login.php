@@ -1,25 +1,20 @@
 <?php
-// Inicia a sessão ANTES de qualquer outra coisa. Isso é muito importante.
 session_start();
-
-// Inclui o arquivo de conexão
 include 'conexao.php';
 
-// Define o cabeçalho como JSON para a resposta
+// Define que a resposta será sempre em formato JSON
 header('Content-Type: application/json');
 
-// Pega os dados enviados pelo formulário
-$email = $_POST['email'] ?? ''; // Usar '??' é uma forma segura de evitar erros de 'Undefined index'
-$senha_formulario = $_POST['senha'] ?? '';
+$email = $_POST['email'] ?? '';
+$senha = $_POST['senha'] ?? '';
 
-if (empty($email) || empty($senha_formulario)) {
-    echo json_encode(['status' => 'error', 'message' => 'Email e senha são obrigatórios.']);
+if (empty($email) || empty($senha)) {
+    echo json_encode(['status' => 'error', 'message' => 'Preencha todos os campos!']);
     exit;
 }
 
-// Prepara a query para buscar o usuário pelo email
 $sql = "SELECT id, nome, senha, tipo FROM usuarios WHERE email = ?";
-$stmt = $conexao->prepare($sql);
+$stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $resultado = $stmt->get_result();
@@ -27,28 +22,25 @@ $resultado = $stmt->get_result();
 if ($resultado->num_rows === 1) {
     $usuario = $resultado->fetch_assoc();
 
-    // Compara a senha do formulário com a senha criptografada (hash) do banco
-    if (password_verify($senha_formulario, $usuario['senha'])) {
-        // Senha correta! Login bem-sucedido.
+    if (password_verify($senha, $usuario['senha'])) {
+        // Login Sucesso
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nome'] = $usuario['nome'];
         $_SESSION['usuario_tipo'] = $usuario['tipo'];
-        
+
+        // Retorna sucesso e o tipo para o JS saber para onde redirecionar
         echo json_encode([
             'status' => 'success', 
-            'message' => 'Login realizado com sucesso!',
+            'message' => 'Login realizado!', 
             'tipo' => $usuario['tipo']
         ]);
     } else {
-        // Senha incorreta
-        echo json_encode(['status' => 'error', 'message' => 'Email ou senha inválidos.']);
+        echo json_encode(['status' => 'error', 'message' => 'Senha incorreta.']);
     }
 } else {
-    // Usuário não encontrado
-    echo json_encode(['status' => 'error', 'message' => 'Email ou senha inválidos.']);
+    echo json_encode(['status' => 'error', 'message' => 'Email não encontrado.']);
 }
 
 $stmt->close();
-$conexao->close();
-
+$conn->close();
 ?>
