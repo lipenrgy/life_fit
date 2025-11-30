@@ -1,5 +1,5 @@
 <?php
-// 1. Inicia a sessão para saber quem está a acessar
+// 1. Inicia a sessão
 session_start();
 
 // Variáveis de controle
@@ -7,28 +7,26 @@ $esta_logado = isset($_SESSION['usuario_id']);
 $foto_perfil = "";
 $nome_usuario = "";
 $link_painel = "#";
+$texto_botao = "Comece sua avaliação"; 
 
 if ($esta_logado) {
-    // Conecta ao banco APENAS se estiver logado para buscar a foto
+    // Conecta ao banco
     include 'php/conexao.php';
     
     $usuario_id = $_SESSION['usuario_id'];
     $nome_usuario = $_SESSION['usuario_nome'];
     $tipo_usuario = $_SESSION['usuario_tipo'];
 
-    // Define o LINK e o TEXTO do botão baseado no tipo de usuário
-    $texto_botao = "Meu Painel"; // Texto padrão
-
+    // Define link e texto do botão da capa
     if ($tipo_usuario == 'aluno') {
         $link_painel = "painel_aluno.php";
         $texto_botao = "Acessar meu Treino";
     } else {
-        // Se for treinador ou nutricionista
         $link_painel = "painel_treinador.php";
         $texto_botao = "Acessar meus Alunos";
     }
 
-    // Busca a foto
+    // Busca foto
     $sql = "SELECT foto FROM usuarios WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $usuario_id);
@@ -42,11 +40,10 @@ if ($esta_logado) {
         }
     }
     
-    // Busca profissionais para a área de baixo (mantendo tua lógica antiga)
+    // Busca profissionais
     $sql_profissionais = "SELECT * FROM usuarios WHERE tipo IN ('treinador', 'nutricionista') ORDER BY tipo DESC";
     $result_profissionais = $conn->query($sql_profissionais);
 } else {
-    // Se não estiver logado, busca profissionais normalmente
     include 'php/conexao.php';
     $sql_profissionais = "SELECT * FROM usuarios WHERE tipo IN ('treinador', 'nutricionista') ORDER BY tipo DESC";
     $result_profissionais = $conn->query($sql_profissionais);
@@ -62,84 +59,40 @@ if ($esta_logado) {
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* Estilo da foto redonda pequena no menu */
+        /* CSS do Menu do Usuário */
         .nav-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #8A2BE2;
-            cursor: pointer;
-            transition: transform 0.2s;
+            width: 45px; height: 45px; border-radius: 50%; object-fit: cover;
+            border: 2px solid #8A2BE2; cursor: pointer; transition: transform 0.2s;
         }
         .nav-avatar:hover { transform: scale(1.1); }
         
-        /* Container do usuário no menu */
         .user-menu-container {
-            position: relative; /* Importante para o dropdown aparecer no lugar certo */
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            height: 100%; /* Garante altura total */
-            padding-bottom: 5px; /* Pequena margem de segurança */
+            position: relative; display: flex; align-items: center;
+            gap: 10px; height: 100%; padding-bottom: 5px;
         }
 
-        /* O Dropdown da Home */
         .home-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%; /* Fica logo abaixo do container */
-            right: 0;
-            background-color: var(--card-bg, #fff);
-            min-width: 180px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            border-radius: 8px;
-            z-index: 1000;
-            padding: 10px 0;
-            
-            /* Em vez de margin-top, usamos um afastamento visual mas conectamos com a ponte */
-            margin-top: 10px; 
+            display: none; position: absolute; top: 100%; right: 0;
+            background-color: var(--card-bg, #fff); min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2); border-radius: 8px;
+            z-index: 1000; padding: 10px 0; margin-top: 10px; 
         }
 
-        /* --- A SOLUÇÃO: A PONTE INVISÍVEL --- */
-        /* Isso cria um bloco transparente entre a foto e o menu */
+        /* A PONTE INVISÍVEL */
         .home-dropdown::before {
-            content: "";
-            position: absolute;
-            top: -20px; /* Sobe para cobrir o buraco */
-            left: 0;
-            width: 100%;
-            height: 20px; /* Altura do buraco */
-            background: transparent; /* Invisível */
+            content: ""; position: absolute; top: -20px; left: 0;
+            width: 100%; height: 20px; background: transparent;
         }
-        /* ------------------------------------ */
         
-        /* Modo escuro suporte básico */
-        .dark-mode .home-dropdown {
-            background-color: #1f1f1f;
-            border: 1px solid #333;
-        }
-
-        /* A regra de Hover */
-        .user-menu-container:hover .home-dropdown {
-            display: block;
-        }
+        .dark-mode .home-dropdown { background-color: #1f1f1f; border: 1px solid #333; }
+        .user-menu-container:hover .home-dropdown { display: block; }
 
         .home-dropdown a {
-            color: #333;
-            padding: 12px 20px;
-            text-decoration: none;
-            display: block;
-            font-size: 0.95rem;
-            transition: background 0.2s;
+            color: #333; padding: 12px 20px; text-decoration: none;
+            display: block; font-size: 0.95rem; transition: background 0.2s;
         }
-        
         .dark-mode .home-dropdown a { color: #fff; }
-
-        .home-dropdown a:hover {
-            background-color: #f1f1f1;
-            color: #8A2BE2;
-        }
+        .home-dropdown a:hover { background-color: #f1f1f1; color: #8A2BE2; }
         .dark-mode .home-dropdown a:hover { background-color: #333; }
     </style>
 
@@ -182,7 +135,6 @@ if ($esta_logado) {
                 </div>
 
                 <?php if ($esta_logado): ?>
-                    
                     <div class="user-menu-container">
                         <span style="font-size: 0.9em; font-weight: bold;">Olá, <?php echo htmlspecialchars($nome_usuario); ?></span>
                         
@@ -199,15 +151,13 @@ if ($esta_logado) {
                             <a href="php/logout.php" style="color: red;">Sair</a>
                         </div>
                     </div>
-
                 <?php else: ?>
-                    
                     <a href="login.html">
                         <button id="open-modal-btn" class="btn">Login</button>
                     </a>
-
                 <?php endif; ?>
-                </div>
+
+            </div>
         </div>
     </header>
 
@@ -219,7 +169,7 @@ if ($esta_logado) {
                     <p>Na Life Fit, oferecemos o melhor ambiente e os melhores profissionais para você alcançar seus objetivos de forma saudável e eficiente.</p>
                     
                     <?php if ($esta_logado): ?>
-                         <a href="<?php echo $link_painel; ?>" class="btn btn-primary"><?php echo $texto_botao; ?></a>
+                        <a href="<?php echo $link_painel; ?>" class="btn btn-primary"><?php echo $texto_botao; ?></a>
                     <?php else: ?>
                         <a href="#calculo" class="btn btn-primary">Comece sua avaliação</a>
                     <?php endif; ?>
@@ -240,10 +190,10 @@ if ($esta_logado) {
                         while($row = $result_profissionais->fetch_assoc()) {
                             
                             $nome = htmlspecialchars($row['nome']);
+                            $id_prof = $row['id'];
                             $tipo = $row['tipo'];
-                            $foto_exibir = "";
                             
-                            // Lógica de Foto dos Profissionais
+                            $foto_exibir = "";
                             if (!empty($row['foto']) && file_exists($row['foto'])) {
                                 $foto_exibir = $row['foto'] . "?v=" . time();
                             } else {
@@ -266,7 +216,13 @@ if ($esta_logado) {
                             echo '  <img src="' . $foto_exibir . '" alt="' . $nome . '" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 15px;">';
                             echo '  <h3>' . $nome . '</h3>';
                             echo '  <p style="color: var(--primary-color); font-weight: bold; text-transform: uppercase; margin: 5px 0;">' . $cargo . '</p>';
-                            echo '  <p style="font-size: 0.9em; color: #666;">' . $desc . '</p>';
+                            echo '  <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">' . $desc . '</p>';
+                            
+                            // BOTÃO SÓ PARA ALUNOS
+                            if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] == 'aluno') {
+                                echo '<button onclick="escolherProfissional('.$id_prof.', \''.$tipo.'\')" class="btn" style="padding: 8px 15px; font-size: 0.8rem; background-color: #6C63FF; color: white; border: none; border-radius: 5px; cursor: pointer;">Escolher como meu ' . ucfirst($tipo) . '</button>';
+                            }
+                            
                             echo '</div>';
                         }
                     } else {
@@ -312,6 +268,33 @@ if ($esta_logado) {
             <p>&copy; 2025 Life Fit. Todos os direitos reservados.</p>
         </div>
     </footer>
+
+    <script>
+    function escolherProfissional(idProfissional, tipoProfissional) {
+        if(!confirm("Deseja escolher este profissional como seu " + tipoProfissional + "?")) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('id_profissional', idProfissional);
+        formData.append('tipo_profissional', tipoProfissional);
+
+        fetch('php/api/escolher_profissional.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                alert(data.message);
+                // location.reload(); 
+            } else {
+                alert("Erro: " + data.message);
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+    </script>
 
     <script src="script.js"></script>
     <script src="theme-toggle.js"></script>
