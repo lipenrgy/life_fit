@@ -63,7 +63,7 @@ if ($resultado->num_rows > 0) {
 
             <div class="dropdown-menu">
                 <a href="#" id="btn-meu-perfil">Meu Perfil</a>
-                <a href="#">Configurações</a>
+              <a href="configuracoes.php">Configurações</a>
                 <a href="php/logout.php" class="btn-sair">Sair</a>
             </div>
         </div>

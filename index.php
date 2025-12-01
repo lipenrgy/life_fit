@@ -128,7 +128,7 @@ if ($esta_logado) {
                         <?php endif; ?>
                         <div class="home-dropdown">
                             <a href="<?php echo $link_painel; ?>"><strong>Meu Painel</strong></a>
-                            <a href="#">Configurações</a>
+                  <a href="configuracoes.php">Configurações</a>
                             <hr style="border: 0; border-top: 1px solid #eee;">
                             <a href="php/logout.php" style="color: red;">Sair</a>
                         </div>
